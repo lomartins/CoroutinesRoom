@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -34,7 +35,9 @@ class SignupFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.signupComplete.observe(this, Observer { isComplete ->
-
+            Toast.makeText(activity, "Signup complete", Toast.LENGTH_SHORT).show()
+            val action = SignupFragmentDirections.actionGoToMain()
+            Navigation.findNavController(requireView()).navigate(action)
         })
 
         viewModel.error.observe(this, Observer { error ->
@@ -43,8 +46,16 @@ class SignupFragment : Fragment() {
     }
 
     private fun onSignup(v: View){
-        val action = SignupFragmentDirections.actionGoToMain()
-        Navigation.findNavController(v).navigate(action)
+        val username = signupUsername.text.toString()
+        val password = signupPassword.text.toString()
+        val info = otherInfo.text.toString()
+
+        if (username.isEmpty() || password.isEmpty() || info.isEmpty()) {
+            Toast.makeText(activity, "Please fill all fields", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        viewModel.signup(username, password, info)
     }
 
     private fun onGotoLogin(v: View) {
