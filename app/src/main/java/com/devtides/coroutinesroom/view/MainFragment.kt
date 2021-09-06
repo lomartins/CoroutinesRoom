@@ -36,23 +36,36 @@ class MainFragment : Fragment() {
         observeViewModel()
     }
 
-    fun observeViewModel() {
+    private fun observeViewModel() {
         viewModel.signout.observe(this, Observer {
-
+            Toast.makeText(activity, "Signed out", Toast.LENGTH_SHORT).show()
+            goToSignupScreen()
         })
         viewModel.userDeleted.observe(this, Observer {
-
+            Toast.makeText(activity, "User deleted", Toast.LENGTH_SHORT).show()
+            goToSignupScreen()
         })
+    }
+
+    private fun goToSignupScreen() {
+        val action = MainFragmentDirections.actionGoToSignup()
+        Navigation.findNavController(requireView()).navigate(action)
     }
 
     private fun onSignout() {
-        val action = MainFragmentDirections.actionGoToSignup()
-        Navigation.findNavController(usernameTV).navigate(action)
+        viewModel.onSignout()
     }
 
     private fun onDelete() {
-        val action = MainFragmentDirections.actionGoToSignup()
-        Navigation.findNavController(usernameTV).navigate(action)
+        activity?.let {
+            AlertDialog.Builder(it)
+                .setTitle("Delete user")
+                .setMessage("Are you sure you want to delete this user?")
+                .setPositiveButton("Yes") { _, _ -> viewModel.onDeleteUser() }
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show()
+        }
     }
 
 }
