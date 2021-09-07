@@ -41,7 +41,7 @@ class SignupFragment : Fragment() {
         })
 
         viewModel.error.observe(this, Observer { error ->
-
+            Toast.makeText(activity, "Error: $error", Toast.LENGTH_SHORT).show()
         })
     }
 
